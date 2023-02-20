@@ -2,6 +2,7 @@ import { Button, Form, Input } from "antd";
 import axios from "axios";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import useToken from "../../services/token.service";
 import styles from "./login.module.css";
 
 interface User {
@@ -12,6 +13,7 @@ interface User {
 export const Login = () => {
   const [useForm] = Form.useForm();
   const navigate = useNavigate();
+  const { setToken } = useToken();
 
   const login = useCallback(async (form: User) => {
     axios
@@ -23,6 +25,7 @@ export const Login = () => {
         const result = response?.data;
 
         if (result?.token) {
+          setToken(result.token);
           navigate("/profile");
         }
       });
@@ -34,7 +37,9 @@ export const Login = () => {
       <Button className={styles.button} onClick={() => navigate("/")}>
         About us
       </Button>
-      <Button className={styles.button} type="primary">Sign in</Button>
+      <Button className={styles.button} type="primary">
+        Sign in
+      </Button>
       <Form
         name="login"
         layout="vertical"
