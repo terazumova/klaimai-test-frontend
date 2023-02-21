@@ -15,7 +15,7 @@ export const Profile = () => {
   const [fullQuote, setFullQuote] = useState<string>("");
 
   const navigate = useNavigate();
-  const { token } = useToken();
+  const { token, setToken } = useToken();
 
   const fetchProfileInformation = () => {
     if (!token) {
@@ -39,6 +39,21 @@ export const Profile = () => {
       });
   };
 
+  const logout = () => {
+    axios
+      .delete(`${process.env.REACT_APP_PUBLIC_API_URL}/logout`, {
+        params: {
+          token,
+        },
+      })
+      .then(({ data: response }) => {
+        if (response?.success) {
+          setToken("");
+          navigate("/");
+        }
+      });
+  };
+
   useEffect(() => {
     if (isMounted) {
       return;
@@ -56,7 +71,9 @@ export const Profile = () => {
       <Button className={styles.button} type="primary">
         Profile
       </Button>
-      <Button className={styles.button}>Sign out</Button>
+      <Button className={styles.button} onClick={() => logout()}>
+        Sign out
+      </Button>
       {userName && (
         <div className={styles.profileWrapper}>
           <Avatar size={170} icon={<UserOutlined />} />
