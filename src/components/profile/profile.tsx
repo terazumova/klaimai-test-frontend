@@ -12,6 +12,7 @@ export const Profile = () => {
   const [isQuoteModalVisible, setIsQuoteModalVisible] =
     useState<boolean>(false);
   const [userName, setUserName] = useState<string>("");
+  const [fullQuote, setFullQuote] = useState<string>("");
 
   const navigate = useNavigate();
   const { token } = useToken();
@@ -56,25 +57,26 @@ export const Profile = () => {
         Profile
       </Button>
       <Button className={styles.button}>Sign out</Button>
-      <div className={styles.profileWrapper}>
-        <Avatar size={170} icon={<UserOutlined />} />
-        <div className={styles.profileInformation}>
-          <h2 className={styles.header}>Welcome, {userName}</h2>
-          <Button
-            className={styles.button}
-            type="primary"
-            onClick={() => {
-              setIsQuoteModalVisible(true);
-            }}
-          >
-            Update
-          </Button>
+      {userName && (
+        <div className={styles.profileWrapper}>
+          <Avatar size={170} icon={<UserOutlined />} />
+          <div className={styles.profileInformation}>
+            <h2 className={styles.header}>Welcome, {userName}</h2>
+            <Button
+              className={styles.button}
+              type="primary"
+              onClick={() => setIsQuoteModalVisible(true)}
+            >
+              Update
+            </Button>
+          </div>
         </div>
-      </div>
-      <p>[here is the place for concatenated result from long running call]</p>
+      )}
+      {fullQuote && <p>{fullQuote}</p>}
       <QuoteModal
         isQuoteModalVisible={isQuoteModalVisible}
         setIsQuoteModalVisible={setIsQuoteModalVisible}
+        onQuoteFetched={(fullQuote) => setFullQuote(fullQuote)}
       />
     </>
   );
