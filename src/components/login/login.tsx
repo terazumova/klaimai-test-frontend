@@ -33,7 +33,7 @@ export const Login = () => {
 
   return (
     <>
-      <h1 className={styles.hidden}>Sign in</h1>
+      <h1 className="hidden">Sign in</h1>
       <Button className={styles.button} onClick={() => navigate("/")}>
         About us
       </Button>

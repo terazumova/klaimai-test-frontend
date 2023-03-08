@@ -17,7 +17,7 @@ export const Profile = () => {
   const navigate = useNavigate();
   const { token, setToken } = useToken();
 
-  const fetchProfileInformation = () => {
+  const fetchProfileInformation = (): void => {
     if (!token) {
       return;
     }
@@ -64,7 +64,7 @@ export const Profile = () => {
 
   return (
     <>
-      <h1 className={styles.hidden}>Profile</h1>
+      <h1 className="hidden">Profile</h1>
       <Button className={styles.button} onClick={() => navigate("/")}>
         About us
       </Button>

@@ -28,7 +28,7 @@ export const QuoteModal: React.FC<{
     }
   }, [isQuoteModalVisible]);
 
-  const fetchQuotes = () => {
+  const fetchQuotes = (): void => {
     setIsQuoteModalVisible(true);
 
     const authorUrl = new URL(`${process.env.REACT_APP_PUBLIC_API_URL}/author`);
@@ -67,7 +67,7 @@ export const QuoteModal: React.FC<{
     });
   };
 
-  const getWithCancel = (url: URL, isAuthorToken: boolean) => {
+  const getWithCancel = (url: URL, isAuthorToken: boolean): Promise<string> => {
     const xhr = new XMLHttpRequest();
     xhr.open("GET", url);
     xhr.send();
@@ -97,7 +97,7 @@ export const QuoteModal: React.FC<{
     });
   };
 
-  const onCancelRequests = () => {
+  const onCancelRequests = (): void => {
     if (cancelAuthorToken?.cancel) {
       cancelAuthorToken.cancel();
     }
