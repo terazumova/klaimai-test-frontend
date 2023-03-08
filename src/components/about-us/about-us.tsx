@@ -35,7 +35,7 @@ export const AboutUs = () => {
   const [data, dispatch] = useReducer(reducer, initialState);
   const navigate = useNavigate();
 
-  const fetchCompanyDescription = () => {
+  const fetchCompanyDescription = (): void => {
     axios
       .get(`${process.env.REACT_APP_PUBLIC_API_URL}/info`)
       .then(({ data: response }) => {
@@ -58,7 +58,7 @@ export const AboutUs = () => {
 
   return (
     <>
-      <h1 className={styles.hidden}>About us</h1>
+      <h1 className="hidden">About us</h1>
       <Button className={styles.button} type="primary">About us</Button>
       <Button className={styles.button} onClick={() => navigate("/login")}>
         Sign in
