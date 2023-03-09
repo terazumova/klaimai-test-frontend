@@ -1,6 +1,6 @@
 import { Button, Form, Input } from "antd";
 import axios from "axios";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useToken from "../../services/token.service";
 import styles from "./login.module.css";
@@ -31,13 +31,17 @@ export const Login = () => {
       });
   }, []);
 
+  useEffect(() => {
+    document.title = 'Sign in';
+  }, []);
+
   return (
     <>
       <h1 className="hidden">Sign in</h1>
-      <Button className={styles.button} onClick={() => navigate("/")}>
+      <Button className="button" onClick={() => navigate("/")}>
         About us
       </Button>
-      <Button className={styles.button} type="primary">
+      <Button className="button" type="primary">
         Sign in
       </Button>
       <Form
@@ -79,12 +83,7 @@ export const Login = () => {
         >
           <Input placeholder="Password" size="large" type="password" />
         </Form.Item>
-        <Button
-          className={styles.button}
-          type="primary"
-          size="large"
-          htmlType="submit"
-        >
+        <Button className="button" type="primary" htmlType="submit">
           Submit
         </Button>
       </Form>

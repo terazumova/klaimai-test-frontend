@@ -1,10 +1,3 @@
-.button {
-  width: 120px;
-  height: 50px;
-  font-size: 20px;
-  margin-right: 10px;
-}
-
 .profileWrapper {
   display: flex;
   margin: 50px 0;
@@ -13,9 +6,10 @@
 .profileInformation {
   display: inline-flex;
   flex-direction: column;
+  justify-content: center;
   margin-left: 50px;
 }
 
 .header {
-  font-size: 42px;
+  font-size: 28px;
 }

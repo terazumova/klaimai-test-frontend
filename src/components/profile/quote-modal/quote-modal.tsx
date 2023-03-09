@@ -35,7 +35,7 @@ export const QuoteModal: React.FC<{
 
     authorUrl.searchParams.set("token", token);
 
-    setFirstStepText("Step 1: Requesting author...");
+    setFirstStepText("Step 1: Requesting author..");
 
     getWithCancel(authorUrl, true).then((data) => {
       const result = JSON.parse(String(data))?.data;
@@ -51,7 +51,7 @@ export const QuoteModal: React.FC<{
       quoteUrl.searchParams.set("authorId", result.authorId);
 
       setFirstStepText((firstStepText) => firstStepText + " Completed.");
-      setSecondStepText("Step 2: Requesting quote...");
+      setSecondStepText("Step 2: Requesting quote..");
 
       getWithCancel(quoteUrl, false).then((data) => {
         const result = JSON.parse(String(data))?.data;
@@ -61,7 +61,6 @@ export const QuoteModal: React.FC<{
         }
 
         setSecondStepText((secondStepText) => secondStepText + " Completed.");
-
         onQuoteFetched(`${authorName}: ${result.quote}`);
       });
     });
@@ -111,18 +110,24 @@ export const QuoteModal: React.FC<{
 
   return (
     <Modal
+      className="modal"
       title="Requesting the code"
       open={isQuoteModalVisible}
-      onCancel={() => {}}
+      closable={false}
+      onCancel={() => onCancelRequests()}
       width={740}
       footer={[
-        <Button type="primary" onClick={() => onCancelRequests()}>
+        <Button
+          type="primary"
+          className="button"
+          onClick={() => onCancelRequests()}
+        >
           Cancel
         </Button>,
       ]}
     >
-      <p>{firstStepText}</p>
-      <p>{secondStepText}</p>
+      <div>{firstStepText}</div>
+      <div>{secondStepText}</div>
     </Modal>
   );
 };

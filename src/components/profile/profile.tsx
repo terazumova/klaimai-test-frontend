@@ -62,25 +62,29 @@ export const Profile = () => {
     fetchProfileInformation();
   }, []);
 
+  useEffect(() => {
+    document.title = 'Profile';
+  }, []);
+
   return (
     <>
       <h1 className="hidden">Profile</h1>
-      <Button className={styles.button} onClick={() => navigate("/")}>
+      <Button className="button" onClick={() => navigate("/")}>
         About us
       </Button>
-      <Button className={styles.button} type="primary">
+      <Button className="button" type="primary">
         Profile
       </Button>
-      <Button className={styles.button} onClick={() => logout()}>
+      <Button className="button" onClick={() => logout()}>
         Sign out
       </Button>
       {userName && (
         <div className={styles.profileWrapper}>
-          <Avatar size={170} icon={<UserOutlined />} />
+          <Avatar size={130} icon={<UserOutlined />} />
           <div className={styles.profileInformation}>
             <h2 className={styles.header}>Welcome, {userName}</h2>
             <Button
-              className={styles.button}
+              className="button"
               type="primary"
               onClick={() => setIsQuoteModalVisible(true)}
             >
