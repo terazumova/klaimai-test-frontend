@@ -1,7 +1,8 @@
 import { Button } from "antd";
-import axios from "axios";
 import { useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../constants";
+import { toast } from "react-toastify";
 
 const initialState = {
   description: "",
@@ -34,15 +35,25 @@ export const AboutUs = () => {
   const navigate = useNavigate();
 
   const fetchCompanyDescription = (): void => {
-    axios
-      .get(`${process.env.REACT_APP_PUBLIC_API_URL}/info`)
-      .then(({ data: response }) => {
-        const result = response?.data;
+    fetch(`${API_URL}/info`, {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        const { success, data } = result;
 
-        if (result?.info) {
-          dispatch({ type: "CHANGE_DESCRIPTION", payload: result.info });
+        if (!success) {
+          toast.error(data.message);
+          return;
+        }
+
+        if (data?.info) {
+          dispatch({ type: "CHANGE_DESCRIPTION", payload: data.info });
           setIsMounted(true);
         }
+      })
+      .catch((error) => {
+        console.error(error);
       });
   };
 
@@ -55,7 +66,7 @@ export const AboutUs = () => {
   }, []);
 
   useEffect(() => {
-    document.title = 'About us';
+    document.title = "About us";
   }, []);
 
   return (

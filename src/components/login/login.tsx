@@ -1,7 +1,8 @@
 import { Button, Form, Input } from "antd";
-import axios from "axios";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { API_URL } from "../../constants";
 import useToken from "../../services/token.service";
 import styles from "./login.module.css";
 
@@ -16,23 +17,37 @@ export const Login = () => {
   const { setToken } = useToken();
 
   const login = useCallback(async (form: User) => {
-    axios
-      .post(`${process.env.REACT_APP_PUBLIC_API_URL}/login`, {
+    fetch(`${API_URL}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         email: form.email,
         password: form.password,
-      })
-      .then(({ data: response }) => {
-        const result = response?.data;
+      }),
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        const { success, data } = result;
 
-        if (result?.token) {
-          setToken(result.token);
+        if (!success) {
+          toast.error(data.message);
+          return;
+        }
+
+        if (data?.token) {
+          setToken(data.token);
           navigate("/profile");
         }
+      })
+      .catch((error) => {
+        console.error(error);
       });
   }, []);
 
   useEffect(() => {
-    document.title = 'Sign in';
+    document.title = "Sign in";
   }, []);
 
   return (

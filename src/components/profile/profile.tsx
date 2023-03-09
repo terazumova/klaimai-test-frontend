@@ -1,8 +1,9 @@
 import { UserOutlined } from "@ant-design/icons";
 import { Avatar, Button } from "antd";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { API_URL } from "../../constants";
 import useToken from "../../services/token.service";
 import styles from "./profile.module.css";
 import { QuoteModal } from "./quote-modal/quote-modal";
@@ -22,35 +23,59 @@ export const Profile = () => {
       return;
     }
 
-    axios
-      .get(`${process.env.REACT_APP_PUBLIC_API_URL}/profile`, {
-        params: {
+    fetch(
+      `${API_URL}/profile?` +
+        new URLSearchParams({
           token,
-        },
-      })
-      .then(({ data: response }) => {
-        const result = response.data;
+        }),
+      {
+        method: "GET",
+      }
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        const { success, data } = result;
 
-        if (result.fullname) {
-          setUserName(result.fullname);
+        if (!success) {
+          toast.error(data.message);
+          return;
+        }
+
+        if (data?.fullname) {
+          setUserName(data.fullname);
         }
 
         setIsMounted(true);
+      })
+      .catch((error) => {
+        console.error(error);
       });
   };
 
   const logout = () => {
-    axios
-      .delete(`${process.env.REACT_APP_PUBLIC_API_URL}/logout`, {
-        params: {
-          token,
-        },
-      })
-      .then(({ data: response }) => {
-        if (response?.success) {
-          setToken("");
-          navigate("/");
+    fetch(
+      `${API_URL}/logout?` +
+        new URLSearchParams({
+          token: token,
+        }),
+      {
+        method: "DELETE",
+      }
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        const { success, data } = result;
+
+        if (!success) {
+          toast.error(data.message);
+          return;
         }
+
+        setToken("");
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error(error);
       });
   };
 
@@ -63,7 +88,7 @@ export const Profile = () => {
   }, []);
 
   useEffect(() => {
-    document.title = 'Profile';
+    document.title = "Profile";
   }, []);
 
   return (
