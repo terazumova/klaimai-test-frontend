@@ -1,5 +1,6 @@
 import { Button, Modal } from "antd";
 import React, { useEffect, useState } from "react";
+import { API_URL, STEPS } from "../../../constants";
 import useToken from "../../../services/token.service";
 
 type Token = {
@@ -31,15 +32,15 @@ export const QuoteModal: React.FC<{
   const fetchQuotes = (): void => {
     setIsQuoteModalVisible(true);
 
-    const authorUrl = new URL(`${process.env.REACT_APP_PUBLIC_API_URL}/author`);
+    const authorUrl = new URL(`${API_URL}/author`);
 
     authorUrl.searchParams.set("token", token);
 
-    setFirstStepText("Step 1: Requesting author..");
+    setFirstStepText(STEPS.FIRST_STEP);
 
     getWithCancel(authorUrl, true).then((data) => {
       const result = JSON.parse(String(data))?.data;
-      const quoteUrl = new URL(`${process.env.REACT_APP_PUBLIC_API_URL}/quote`);
+      const quoteUrl = new URL(`${API_URL}/quote`);
 
       if (!result?.authorId) {
         return;
@@ -50,8 +51,8 @@ export const QuoteModal: React.FC<{
       quoteUrl.searchParams.set("token", token);
       quoteUrl.searchParams.set("authorId", result.authorId);
 
-      setFirstStepText((firstStepText) => firstStepText + " Completed.");
-      setSecondStepText("Step 2: Requesting quote..");
+      setFirstStepText((firstStepText) => firstStepText + STEPS.COMPLETED);
+      setSecondStepText(STEPS.SECOND_STEP);
 
       getWithCancel(quoteUrl, false).then((data) => {
         const result = JSON.parse(String(data))?.data;
@@ -60,7 +61,7 @@ export const QuoteModal: React.FC<{
           return;
         }
 
-        setSecondStepText((secondStepText) => secondStepText + " Completed.");
+        setSecondStepText((secondStepText) => secondStepText + STEPS.COMPLETED);
         onQuoteFetched(`${authorName}: ${result.quote}`);
       });
     });
