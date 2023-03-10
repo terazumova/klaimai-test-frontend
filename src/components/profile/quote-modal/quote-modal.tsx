@@ -1,5 +1,5 @@
 import { Button, Modal } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer } from "react";
 import { API_URL, STEPS } from "../../../constants";
 import useToken from "../../../services/token.service";
 
@@ -7,23 +7,74 @@ type Token = {
   cancel?: () => void;
 };
 
+const initialState = {
+  firstStepText: "",
+  secondStepText: "",
+  cancelAuthorToken: {},
+  cancelQuoteToken: {},
+};
+
+type State = {
+  firstStepText: string;
+  secondStepText: string;
+  cancelAuthorToken: Token;
+  cancelQuoteToken: Token;
+};
+
+type FirstStepAction = { type: "CHANGE_FIRST_STEP_TEXT"; payload: string };
+type SecondStepAction = { type: "CHANGE_SECOND_STEP_TEXT"; payload: string };
+type CancelAuthorAction = {
+  type: "CHANGE_CANCEL_AUTHOR_TOKEN";
+  payload: Token;
+};
+type CancelQuoteAction = { type: "CHANGE_CANCEL_QUOTE_TOKEN"; payload: Token };
+
+type Action =
+  | FirstStepAction
+  | SecondStepAction
+  | CancelAuthorAction
+  | CancelQuoteAction;
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case "CHANGE_FIRST_STEP_TEXT":
+      return {
+        ...state,
+        firstStepText: action.payload,
+      };
+    case "CHANGE_SECOND_STEP_TEXT":
+      return {
+        ...state,
+        secondStepText: action.payload,
+      };
+    case "CHANGE_CANCEL_AUTHOR_TOKEN":
+      return {
+        ...state,
+        cancelAuthorToken: action.payload,
+      };
+    case "CHANGE_CANCEL_QUOTE_TOKEN":
+      return {
+        ...state,
+        cancelQuoteToken: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
 export const QuoteModal: React.FC<{
   isQuoteModalVisible: boolean;
   setIsQuoteModalVisible: (value: boolean) => void;
   onQuoteFetched: (value: string) => void;
 }> = ({ isQuoteModalVisible, setIsQuoteModalVisible, onQuoteFetched }) => {
-  const [firstStepText, setFirstStepText] = useState<string>("");
-  const [secondStepText, setSecondStepText] = useState<string>("");
-
-  const [cancelAuthorToken, setCancelAuthorToken] = useState<Token>({});
-  const [cancelQuoteToken, setCancelQuoteToken] = useState<Token>({});
+  const [quoteData, dispatch] = useReducer(reducer, initialState);
 
   const { token } = useToken();
 
   useEffect(() => {
     if (isQuoteModalVisible) {
-      setFirstStepText("");
-      setSecondStepText("");
+      dispatch({ type: "CHANGE_FIRST_STEP_TEXT", payload: "" });
+      dispatch({ type: "CHANGE_SECOND_STEP_TEXT", payload: "" });
 
       fetchQuotes();
     }
@@ -36,7 +87,7 @@ export const QuoteModal: React.FC<{
 
     authorUrl.searchParams.set("token", token);
 
-    setFirstStepText(STEPS.FIRST_STEP);
+    dispatch({ type: "CHANGE_FIRST_STEP_TEXT", payload: STEPS.FIRST_STEP });
 
     getWithCancel(authorUrl, true).then((data) => {
       const result = JSON.parse(String(data))?.data;
@@ -51,8 +102,11 @@ export const QuoteModal: React.FC<{
       quoteUrl.searchParams.set("token", token);
       quoteUrl.searchParams.set("authorId", result.authorId);
 
-      setFirstStepText((firstStepText) => firstStepText + STEPS.COMPLETED);
-      setSecondStepText(STEPS.SECOND_STEP);
+      dispatch({
+        type: "CHANGE_FIRST_STEP_TEXT",
+        payload: STEPS.FIRST_STEP + STEPS.COMPLETED,
+      });
+      dispatch({ type: "CHANGE_SECOND_STEP_TEXT", payload: STEPS.SECOND_STEP });
 
       getWithCancel(quoteUrl, false).then((data) => {
         const result = JSON.parse(String(data))?.data;
@@ -61,7 +115,10 @@ export const QuoteModal: React.FC<{
           return;
         }
 
-        setSecondStepText((secondStepText) => secondStepText + STEPS.COMPLETED);
+        dispatch({
+          type: "CHANGE_SECOND_STEP_TEXT",
+          payload: STEPS.SECOND_STEP + STEPS.COMPLETED,
+        });
         onQuoteFetched(`${authorName}: ${result.quote}`);
       });
     });
@@ -73,15 +130,21 @@ export const QuoteModal: React.FC<{
     xhr.send();
 
     if (isAuthorToken) {
-      setCancelAuthorToken({
-        cancel: function () {
-          xhr.abort();
+      dispatch({
+        type: "CHANGE_CANCEL_AUTHOR_TOKEN",
+        payload: {
+          cancel: function () {
+            xhr.abort();
+          },
         },
       });
     } else {
-      setCancelQuoteToken({
-        cancel: function () {
-          xhr.abort();
+      dispatch({
+        type: "CHANGE_CANCEL_QUOTE_TOKEN",
+        payload: {
+          cancel: function () {
+            xhr.abort();
+          },
         },
       });
     }
@@ -98,12 +161,12 @@ export const QuoteModal: React.FC<{
   };
 
   const onCancelRequests = (): void => {
-    if (cancelAuthorToken?.cancel) {
-      cancelAuthorToken.cancel();
+    if (quoteData.cancelAuthorToken?.cancel) {
+      quoteData.cancelAuthorToken.cancel();
     }
 
-    if (cancelQuoteToken?.cancel) {
-      cancelQuoteToken.cancel();
+    if (quoteData.cancelQuoteToken?.cancel) {
+      quoteData.cancelQuoteToken.cancel();
     }
 
     setIsQuoteModalVisible(false);
@@ -127,8 +190,8 @@ export const QuoteModal: React.FC<{
         </Button>,
       ]}
     >
-      <div>{firstStepText}</div>
-      <div>{secondStepText}</div>
+      <div>{quoteData.firstStepText}</div>
+      <div>{quoteData.secondStepText}</div>
     </Modal>
   );
 };

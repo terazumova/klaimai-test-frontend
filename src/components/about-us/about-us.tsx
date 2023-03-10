@@ -1,28 +1,35 @@
 import { Button } from "antd";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../constants";
 import { toast } from "react-toastify";
 
 const initialState = {
   description: "",
+  isMounted: false,
 };
 
 type State = {
   description: string;
+  isMounted: boolean;
 };
 
-type Action = {
-  type: string;
-  payload: string;
-};
+type DescriptionAction = { type: 'CHANGE_DESCRIPTION'; payload: string };
+type IsMountedAction = { type: 'CHANGE_IS_MOUNTED'; payload: boolean };
 
-const reducer = (state: State, action: Action) => {
+type Action = DescriptionAction | IsMountedAction;
+
+const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "CHANGE_DESCRIPTION":
       return {
         ...state,
         description: action.payload,
+      };
+    case "CHANGE_IS_MOUNTED":
+      return {
+        ...state,
+        isMounted: action.payload,
       };
     default:
       return state;
@@ -30,7 +37,6 @@ const reducer = (state: State, action: Action) => {
 };
 
 export const AboutUs = () => {
-  const [isMounted, setIsMounted] = useState<boolean>(false);
   const [data, dispatch] = useReducer(reducer, initialState);
   const navigate = useNavigate();
 
@@ -49,7 +55,7 @@ export const AboutUs = () => {
 
         if (data?.info) {
           dispatch({ type: "CHANGE_DESCRIPTION", payload: data.info });
-          setIsMounted(true);
+          dispatch({ type: "CHANGE_IS_MOUNTED", payload: true });
         }
       })
       .catch((error) => {
@@ -58,7 +64,7 @@ export const AboutUs = () => {
   };
 
   useEffect(() => {
-    if (isMounted) {
+    if (data.isMounted) {
       return;
     }
 
