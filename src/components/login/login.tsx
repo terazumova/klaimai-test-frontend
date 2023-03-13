@@ -1,10 +1,11 @@
 import { Button, Form, Input } from "antd";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { API_URL } from "../../constants";
 import useToken from "../../services/token.service";
 import styles from "./login.module.css";
+import 'react-toastify/dist/ReactToastify.css';
 
 interface User {
   email: string;
@@ -32,7 +33,7 @@ export const Login = () => {
         const { success, data } = result;
 
         if (!success) {
-          toast.error(data.message);
+          toast.error(data?.message);
           return;
         }
 
@@ -102,6 +103,7 @@ export const Login = () => {
           Submit
         </Button>
       </Form>
+      <ToastContainer />
     </>
   );
 };
