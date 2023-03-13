@@ -1,0 +1,42 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.app {
+  margin: 50px;
+}
+
+.hidden {
+  font-size: 0;
+  width: 1px;
+  height: 1px;
+  display: inline-block;
+  overflow: hidden;
+  position: absolute !important;
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  clip: rect(1px, 1px, 1px, 1px);
+}
+
+.button {
+  width: 100px;
+  height: 40px;
+  font-size: 16px;
+  margin-right: 5px;
+  border-radius: 4px;
+}
+
+.modal .ant-modal-content {
+  border-radius: 4px;
+}
+
+.modal .ant-modal-title {
+  font-size: 28px;
+}
+
+.modal .ant-modal-footer {
+  text-align: left;
+}

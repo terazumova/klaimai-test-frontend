@@ -1,0 +1,8 @@
+.form {
+  max-width: 800px;
+  margin: 20px 0;
+}
+
+.formItem input {
+  border-radius: 4px;
+}
