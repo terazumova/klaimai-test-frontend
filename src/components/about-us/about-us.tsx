@@ -2,7 +2,8 @@ import { Button } from "antd";
 import { useEffect, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../constants";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const initialState = {
   description: "",
@@ -14,8 +15,8 @@ type State = {
   isMounted: boolean;
 };
 
-type DescriptionAction = { type: 'CHANGE_DESCRIPTION'; payload: string };
-type IsMountedAction = { type: 'CHANGE_IS_MOUNTED'; payload: boolean };
+type DescriptionAction = { type: "CHANGE_DESCRIPTION"; payload: string };
+type IsMountedAction = { type: "CHANGE_IS_MOUNTED"; payload: boolean };
 
 type Action = DescriptionAction | IsMountedAction;
 
@@ -49,7 +50,7 @@ export const AboutUs = () => {
         const { success, data } = result;
 
         if (!success) {
-          toast.error(data.message);
+          toast.error(data?.message);
           return;
         }
 
@@ -85,6 +86,7 @@ export const AboutUs = () => {
         Sign in
       </Button>
       <h2>{data?.description ?? ""}</h2>
+      <ToastContainer />
     </>
   );
 };

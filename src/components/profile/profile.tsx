@@ -2,11 +2,12 @@ import { UserOutlined } from "@ant-design/icons";
 import { Avatar, Button } from "antd";
 import { useEffect, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { API_URL } from "../../constants";
 import useToken from "../../services/token.service";
 import styles from "./profile.module.css";
 import { QuoteModal } from "./quote-modal/quote-modal";
+import "react-toastify/dist/ReactToastify.css";
 
 const initialState = {
   isMounted: false,
@@ -67,10 +68,6 @@ export const Profile = () => {
   const { token, setToken } = useToken();
 
   const fetchProfileInformation = (): void => {
-    if (!token) {
-      return;
-    }
-
     fetch(
       `${API_URL}/profile?` +
         new URLSearchParams({
@@ -85,7 +82,8 @@ export const Profile = () => {
         const { success, data } = result;
 
         if (!success) {
-          toast.error(data.message);
+          toast.error(data?.message);
+          navigate("/");
           return;
         }
 
@@ -97,6 +95,7 @@ export const Profile = () => {
       })
       .catch((error) => {
         console.error(error);
+        navigate("/");
       });
   };
 
@@ -115,7 +114,7 @@ export const Profile = () => {
         const { success, data } = result;
 
         if (!success) {
-          toast.error(data.message);
+          toast.error(data?.message);
           return;
         }
 
@@ -124,6 +123,7 @@ export const Profile = () => {
       })
       .catch((error) => {
         console.error(error);
+        navigate("/");
       });
   };
 
@@ -174,10 +174,11 @@ export const Profile = () => {
         setIsQuoteModalVisible={(value) =>
           dispatch({ type: "CHANGE_IS_MODAL_VISIBLE", payload: value })
         }
-        onQuoteFetched={(fullQuote) =>
-          dispatch({ type: "CHANGE_FULLQUOTE", payload: fullQuote })
+        onQuoteFetched={(value) =>
+          dispatch({ type: "CHANGE_FULLQUOTE", payload: value })
         }
       />
+      <ToastContainer />
     </>
   );
 };
