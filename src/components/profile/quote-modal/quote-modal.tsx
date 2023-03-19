@@ -2,7 +2,9 @@ import { Button, Modal } from "antd";
 import React, { useEffect, useReducer } from "react";
 import { API_URL, STEPS } from "../../../constants";
 import { reducer } from "../../../reducers/quoteReducer";
+import { getWithCancel } from "../../../services/api.service";
 import useToken from "../../../services/token.service";
+import { AuthorResponseData, QuoteResponseData } from "../../../types/types";
 
 const initialState = {
   firstStepText: "",
@@ -20,15 +22,6 @@ export const QuoteModal: React.FC<{
 
   const { token } = useToken();
 
-  useEffect(() => {
-    if (isQuoteModalVisible) {
-      dispatch({ type: "CHANGE_FIRST_STEP_TEXT", payload: "" });
-      dispatch({ type: "CHANGE_SECOND_STEP_TEXT", payload: "" });
-
-      fetchQuotes();
-    }
-  }, [isQuoteModalVisible]);
-
   const fetchQuotes = (): void => {
     setIsQuoteModalVisible(true);
 
@@ -38,8 +31,8 @@ export const QuoteModal: React.FC<{
 
     dispatch({ type: "CHANGE_FIRST_STEP_TEXT", payload: STEPS.FIRST_STEP });
 
-    getWithCancel(authorUrl, true).then((data) => {
-      const result = JSON.parse(String(data))?.data;
+    getWithCancel(authorUrl, true, dispatch).then((data) => {
+      const { data: result } = JSON.parse(String(data)) as AuthorResponseData;
       const quoteUrl = new URL(`${API_URL}/quote`);
 
       if (!result?.authorId) {
@@ -49,7 +42,7 @@ export const QuoteModal: React.FC<{
       const authorName = result?.name ?? "";
 
       quoteUrl.searchParams.set("token", token);
-      quoteUrl.searchParams.set("authorId", result.authorId);
+      quoteUrl.searchParams.set("authorId", result.authorId.toString());
 
       dispatch({
         type: "CHANGE_FIRST_STEP_TEXT",
@@ -57,8 +50,8 @@ export const QuoteModal: React.FC<{
       });
       dispatch({ type: "CHANGE_SECOND_STEP_TEXT", payload: STEPS.SECOND_STEP });
 
-      getWithCancel(quoteUrl, false).then((data) => {
-        const result = JSON.parse(String(data))?.data;
+      getWithCancel(quoteUrl, false, dispatch).then((data) => {
+        const { data: result } = JSON.parse(String(data)) as QuoteResponseData;
 
         if (!result?.quote) {
           return;
@@ -73,41 +66,14 @@ export const QuoteModal: React.FC<{
     });
   };
 
-  const getWithCancel = (url: URL, isAuthorToken: boolean): Promise<string> => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", url);
-    xhr.send();
+  useEffect(() => {
+    if (isQuoteModalVisible) {
+      dispatch({ type: "CHANGE_FIRST_STEP_TEXT", payload: "" });
+      dispatch({ type: "CHANGE_SECOND_STEP_TEXT", payload: "" });
 
-    if (isAuthorToken) {
-      dispatch({
-        type: "CHANGE_CANCEL_AUTHOR_TOKEN",
-        payload: {
-          cancel: function () {
-            xhr.abort();
-          },
-        },
-      });
-    } else {
-      dispatch({
-        type: "CHANGE_CANCEL_QUOTE_TOKEN",
-        payload: {
-          cancel: function () {
-            xhr.abort();
-          },
-        },
-      });
+      fetchQuotes();
     }
-
-    return new Promise(function (resolve, reject) {
-      xhr.onload = function () {
-        resolve(xhr.responseText);
-      };
-      xhr.onerror = reject;
-      xhr.onabort = function () {
-        reject(new Error("Cancelled"));
-      };
-    });
-  };
+  }, [isQuoteModalVisible]);
 
   const onCancelRequests = (): void => {
     if (quoteData.cancelAuthorToken?.cancel) {

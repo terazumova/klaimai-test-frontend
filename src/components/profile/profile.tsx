@@ -2,12 +2,16 @@ import { UserOutlined } from "@ant-design/icons";
 import { Avatar, Button } from "antd";
 import { useEffect, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { API_URL } from "../../constants";
+import { toast, ToastContainer } from "react-toastify";
 import { reducer } from "../../reducers/profileReducer";
+import {
+  fetchLogout,
+  fetchProfileInformation,
+} from "../../services/api.service";
 import useToken from "../../services/token.service";
-import styles from "./profile.module.css";
 import { QuoteModal } from "./quote-modal/quote-modal";
+import styles from "./profile.module.css";
+import "react-toastify/dist/ReactToastify.css";
 
 const initialState = {
   isMounted: false,
@@ -22,26 +26,17 @@ export const Profile = () => {
   const navigate = useNavigate();
   const { token, setToken } = useToken();
 
-  const fetchProfileInformation = (): void => {
-    if (!token) {
+  useEffect(() => {
+    if (data.isMounted) {
       return;
     }
 
-    fetch(
-      `${API_URL}/profile?` +
-        new URLSearchParams({
-          token,
-        }),
-      {
-        method: "GET",
-      }
-    )
-      .then((response) => response.json())
-      .then((result) => {
+    fetchProfileInformation(token)
+      ?.then((result) => {
         const { success, data } = result;
 
         if (!success) {
-          toast.error(data.message);
+          toast.error(data?.message);
           return;
         }
 
@@ -53,19 +48,10 @@ export const Profile = () => {
       .catch((error) => {
         console.error(error);
       });
-  };
+  }, []);
 
   const logout = () => {
-    fetch(
-      `${API_URL}/logout?` +
-        new URLSearchParams({
-          token: token,
-        }),
-      {
-        method: "DELETE",
-      }
-    )
-      .then((response) => response.json())
+    fetchLogout(token)
       .then((result) => {
         const { success, data } = result;
 
@@ -81,14 +67,6 @@ export const Profile = () => {
         console.error(error);
       });
   };
-
-  useEffect(() => {
-    if (data.isMounted) {
-      return;
-    }
-
-    fetchProfileInformation();
-  }, []);
 
   useEffect(() => {
     document.title = "Profile";
@@ -133,6 +111,7 @@ export const Profile = () => {
           dispatch({ type: "CHANGE_FULLQUOTE", payload: fullQuote })
         }
       />
+      <ToastContainer />
     </>
   );
 };

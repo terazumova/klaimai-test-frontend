@@ -1,15 +1,12 @@
 import { Button, Form, Input } from "antd";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { API_URL } from "../../constants";
+import { toast, ToastContainer } from "react-toastify";
 import useToken from "../../services/token.service";
+import { User } from "../../types/types";
+import { fetchLogin } from "../../services/api.service";
 import styles from "./login.module.css";
-
-interface User {
-  email: string;
-  password: string;
-}
+import "react-toastify/dist/ReactToastify.css";
 
 export const Login = () => {
   const [useForm] = Form.useForm();
@@ -17,22 +14,12 @@ export const Login = () => {
   const { setToken } = useToken();
 
   const login = useCallback(async (form: User) => {
-    fetch(`${API_URL}/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: form.email,
-        password: form.password,
-      }),
-    })
-      .then((response) => response.json())
+    fetchLogin(form)
       .then((result) => {
         const { success, data } = result;
 
         if (!success) {
-          toast.error(data.message);
+          toast.error(data?.message);
           return;
         }
 
@@ -96,12 +83,18 @@ export const Login = () => {
           ]}
           label="Password"
         >
-          <Input name="password" placeholder="Password" size="large" type="password" />
+          <Input
+            name="password"
+            placeholder="Password"
+            size="large"
+            type="password"
+          />
         </Form.Item>
         <Button className="button" type="primary" htmlType="submit">
           Submit
         </Button>
       </Form>
+      <ToastContainer />
     </>
   );
 };

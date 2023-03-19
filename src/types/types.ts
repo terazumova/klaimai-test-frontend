@@ -54,6 +54,69 @@ export type QuoteAction =
   | CancelAuthorAction
   | CancelQuoteAction;
 
-type Token = {
+export type Token = {
   cancel?: () => void;
+};
+
+export type User = {
+  email: string;
+  password: string;
+};
+
+export type InfoResponseData = {
+  success: boolean;
+  data: {
+    info?: string;
+    message?: string;
+  };
+};
+
+export type RegisterResponseData = {
+  success: boolean;
+  data: {
+    message?: string;
+  };
+};
+
+export type LoginResponseData = {
+  success: boolean;
+  data: {
+    token?: string;
+    message?: string;
+  };
+};
+
+export type ProfileResponseData = {
+  success: boolean;
+  data: {
+    email?: string;
+    fullname?: string;
+    message?: string;
+  };
+};
+
+export type AuthorResponseData = {
+  success: boolean;
+  data: {
+    authorId?: number;
+    name?: string;
+    message?: string;
+  };
+};
+
+export type QuoteResponseData = {
+  success: boolean;
+  data: {
+    authorId?: number;
+    quoteId?: number;
+    quote?: string;
+    message?: string;
+  };
+};
+
+export type DeleteResponseData = {
+  success: boolean;
+  data: {
+    message?: string;
+  };
 };
