@@ -1,65 +1,14 @@
 import { Button, Modal } from "antd";
 import React, { useEffect, useReducer } from "react";
 import { API_URL, STEPS } from "../../../constants";
+import { reducer } from "../../../reducers/quoteReducer";
 import useToken from "../../../services/token.service";
-
-type Token = {
-  cancel?: () => void;
-};
 
 const initialState = {
   firstStepText: "",
   secondStepText: "",
   cancelAuthorToken: {},
   cancelQuoteToken: {},
-};
-
-type State = {
-  firstStepText: string;
-  secondStepText: string;
-  cancelAuthorToken: Token;
-  cancelQuoteToken: Token;
-};
-
-type FirstStepAction = { type: "CHANGE_FIRST_STEP_TEXT"; payload: string };
-type SecondStepAction = { type: "CHANGE_SECOND_STEP_TEXT"; payload: string };
-type CancelAuthorAction = {
-  type: "CHANGE_CANCEL_AUTHOR_TOKEN";
-  payload: Token;
-};
-type CancelQuoteAction = { type: "CHANGE_CANCEL_QUOTE_TOKEN"; payload: Token };
-
-type Action =
-  | FirstStepAction
-  | SecondStepAction
-  | CancelAuthorAction
-  | CancelQuoteAction;
-
-const reducer = (state: State, action: Action): State => {
-  switch (action.type) {
-    case "CHANGE_FIRST_STEP_TEXT":
-      return {
-        ...state,
-        firstStepText: action.payload,
-      };
-    case "CHANGE_SECOND_STEP_TEXT":
-      return {
-        ...state,
-        secondStepText: action.payload,
-      };
-    case "CHANGE_CANCEL_AUTHOR_TOKEN":
-      return {
-        ...state,
-        cancelAuthorToken: action.payload,
-      };
-    case "CHANGE_CANCEL_QUOTE_TOKEN":
-      return {
-        ...state,
-        cancelQuoteToken: action.payload,
-      };
-    default:
-      return state;
-  }
 };
 
 export const QuoteModal: React.FC<{

@@ -82,7 +82,7 @@ export const Login = () => {
           ]}
           label="Email address"
         >
-          <Input placeholder="Enter email" size="large" />
+          <Input name="email" placeholder="Enter email" size="large" />
         </Form.Item>
         <Form.Item
           id="password"
@@ -96,7 +96,7 @@ export const Login = () => {
           ]}
           label="Password"
         >
-          <Input placeholder="Password" size="large" type="password" />
+          <Input name="password" placeholder="Password" size="large" type="password" />
         </Form.Item>
         <Button className="button" type="primary" htmlType="submit">
           Submit

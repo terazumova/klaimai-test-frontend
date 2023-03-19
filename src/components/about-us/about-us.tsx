@@ -3,37 +3,11 @@ import { useEffect, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../constants";
 import { toast } from "react-toastify";
+import { reducer } from "../../reducers/aboutUsReducer";
 
 const initialState = {
   description: "",
   isMounted: false,
-};
-
-type State = {
-  description: string;
-  isMounted: boolean;
-};
-
-type DescriptionAction = { type: 'CHANGE_DESCRIPTION'; payload: string };
-type IsMountedAction = { type: 'CHANGE_IS_MOUNTED'; payload: boolean };
-
-type Action = DescriptionAction | IsMountedAction;
-
-const reducer = (state: State, action: Action): State => {
-  switch (action.type) {
-    case "CHANGE_DESCRIPTION":
-      return {
-        ...state,
-        description: action.payload,
-      };
-    case "CHANGE_IS_MOUNTED":
-      return {
-        ...state,
-        isMounted: action.payload,
-      };
-    default:
-      return state;
-  }
 };
 
 export const AboutUs = () => {
