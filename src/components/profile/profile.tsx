@@ -47,6 +47,7 @@ export const Profile = () => {
       })
       .catch((error) => {
         console.error(error);
+        navigate("/");
       });
   }, []);
 
@@ -56,7 +57,7 @@ export const Profile = () => {
         const { success, data } = result;
 
         if (!success) {
-          toast.error(data.message);
+          toast.error(data?.message);
           return;
         }
 
@@ -65,6 +66,7 @@ export const Profile = () => {
       })
       .catch((error) => {
         console.error(error);
+        navigate("/");
       });
   };
 
@@ -107,8 +109,8 @@ export const Profile = () => {
         setIsQuoteModalVisible={(value) =>
           dispatch({ type: "CHANGE_IS_MODAL_VISIBLE", payload: value })
         }
-        onQuoteFetched={(fullQuote) =>
-          dispatch({ type: "CHANGE_FULLQUOTE", payload: fullQuote })
+        onQuoteFetched={(value) =>
+          dispatch({ type: "CHANGE_FULLQUOTE", payload: value })
         }
       />
       <ToastContainer />
