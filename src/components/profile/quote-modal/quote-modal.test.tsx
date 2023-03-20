@@ -23,7 +23,7 @@ test("renders Profile component", async () => {
 
   render(<QuoteModal {...testProps} />, { wrapper: BrowserRouter });
 
-  expect(screen.getByText(/Requesting the code/i)).toBeInTheDocument();
+  expect(screen.getByText(/Requesting the quote/i)).toBeInTheDocument();
   expect(screen.getByRole("button", { name: /Cancel/i })).toBeInTheDocument();
 });
 
