@@ -6,3 +6,16 @@
 .formItem input {
   border-radius: 4px;
 }
+
+.emailItem {
+  margin-bottom: 0;
+}
+
+.formItem label::before {
+  display: none !important;
+}
+
+.securityNote {
+  margin: 0 0 24px 0;
+  color: #808080;
+}
