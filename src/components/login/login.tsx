@@ -1,3 +1,4 @@
+import cn from 'classnames';
 import { Button, Form, Input } from "antd";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -56,7 +57,7 @@ export const Login = () => {
         <Form.Item
           id="email"
           name="email"
-          className={styles.formItem}
+          className={cn(styles.formItem, styles.emailItem)}
           rules={[
             {
               required: true,
@@ -71,6 +72,7 @@ export const Login = () => {
         >
           <Input name="email" placeholder="Enter email" size="large" />
         </Form.Item>
+        <p className={styles.securityNote}>We'll never share your email with anyone else</p>
         <Form.Item
           id="password"
           name="password"
