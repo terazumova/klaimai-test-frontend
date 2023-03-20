@@ -39,7 +39,7 @@ test("renders Profile component", async () => {
 
   fireEvent.click(await screen.findByRole("button", { name: /Update/i }));
 
-  expect(await screen.findByText(/Requesting the code/i)).toBeInTheDocument();
+  expect(await screen.findByText(/Requesting the quote/i)).toBeInTheDocument();
 });
 
 test("logout on click", async () => {
