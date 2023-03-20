@@ -1,51 +1,26 @@
 import { Button } from "antd";
 import { useEffect, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../../constants";
+import { reducer } from "../../reducers/aboutUsReducer";
+import { fetchCompanyDescription } from "../../services/api.service";
 import { toast, ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 const initialState = {
   description: "",
   isMounted: false,
 };
 
-type State = {
-  description: string;
-  isMounted: boolean;
-};
-
-type DescriptionAction = { type: "CHANGE_DESCRIPTION"; payload: string };
-type IsMountedAction = { type: "CHANGE_IS_MOUNTED"; payload: boolean };
-
-type Action = DescriptionAction | IsMountedAction;
-
-const reducer = (state: State, action: Action): State => {
-  switch (action.type) {
-    case "CHANGE_DESCRIPTION":
-      return {
-        ...state,
-        description: action.payload,
-      };
-    case "CHANGE_IS_MOUNTED":
-      return {
-        ...state,
-        isMounted: action.payload,
-      };
-    default:
-      return state;
-  }
-};
-
 export const AboutUs = () => {
   const [data, dispatch] = useReducer(reducer, initialState);
   const navigate = useNavigate();
 
-  const fetchCompanyDescription = (): void => {
-    fetch(`${API_URL}/info`, {
-      method: "GET",
-    })
-      .then((response) => response.json())
+  useEffect(() => {
+    if (data.isMounted) {
+      return;
+    }
+
+    fetchCompanyDescription()
       .then((result) => {
         const { success, data } = result;
 
@@ -62,14 +37,6 @@ export const AboutUs = () => {
       .catch((error) => {
         console.error(error);
       });
-  };
-
-  useEffect(() => {
-    if (data.isMounted) {
-      return;
-    }
-
-    fetchCompanyDescription();
   }, []);
 
   useEffect(() => {
