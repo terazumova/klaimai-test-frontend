@@ -90,7 +90,7 @@ export const QuoteModal: React.FC<{
   return (
     <Modal
       className="modal"
-      title="Requesting the code"
+      title="Requesting the quote"
       open={isQuoteModalVisible}
       closable={false}
       onCancel={() => onCancelRequests()}
